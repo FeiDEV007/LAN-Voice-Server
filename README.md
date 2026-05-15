@@ -34,8 +34,8 @@ LAN Voice Server is a lightweight, self-hosted voice chat application for local 
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/lan-voice-server.git
-cd lan-voice-server
+git clone https://github.com/FeiDEV007/LAN-Voice-Server.git
+cd LAN-Voice-Server
 
 # 2. Install dependencies
 npm install

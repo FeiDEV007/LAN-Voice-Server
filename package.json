@@ -5,13 +5,13 @@
   "author": "Tom",
   "license": "MIT",
   "keywords": ["voip", "webrtc", "lan", "voice-chat", "self-hosted", "local-network", "websocket"],
-  "homepage": "https://github.com/YOUR_USERNAME/lan-voice-server#readme",
+  "homepage": "https://github.com/FeiDEV007/LAN-Voice-Server#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/lan-voice-server.git"
+    "url": "https://github.com/FeiDEV007/LAN-Voice-Server.git"
   },
   "bugs": {
-    "url": "https://github.com/YOUR_USERNAME/lan-voice-server/issues"
+    "url": "https://github.com/FeiDEV007/LAN-Voice-Server/issues"
   },
   "main": "server.js",
   "bin": "server.js",
