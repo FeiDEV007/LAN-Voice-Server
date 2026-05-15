@@ -129,6 +129,46 @@ html, body {
   .logo h1 { font-size: 1.8rem; }
 }
 
+/* ── Language Toggle ── */
+.lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-bright);
+  border-radius: 999px;
+  padding: 0.3rem 0.5rem;
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  transition: color var(--transition);
+}
+
+.lang-btn:hover {
+  color: var(--text-2);
+}
+
+.lang-btn.active {
+  color: var(--accent);
+}
+
+.lang-sep {
+  color: var(--border-bright);
+  font-size: 0.8rem;
+  user-select: none;
+}
+
 /* ── Cards ── */
 .card {
   border-radius: var(--radius);
@@ -427,12 +467,7 @@ html, body {
   text-overflow: ellipsis;
 }
 
-.participant-name.me::after {
-  content: ' (Du)';
-  color: var(--text-3);
-  font-weight: 400;
-  font-size: 0.78rem;
-}
+/* CSS ::after removed because " (Du)" or " (You)" is now appended dynamically by JavaScript */
 
 .muted-icon {
   font-size: 0.8rem;

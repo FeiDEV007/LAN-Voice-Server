@@ -25,8 +25,13 @@
           <div class="logo-icon">🎙️</div>
           <div>
             <h1>LAN Voice</h1>
-            <p class="subtitle">Lokales Sprach-Chat · Kein Internet nötig</p>
+            <p class="subtitle" data-i18n="subtitle">Lokales Sprach-Chat · Kein Internet nötig</p>
           </div>
+        </div>
+        <div class="lang-toggle">
+          <button id="lang-de" class="lang-btn active">DE</button>
+          <span class="lang-sep">|</span>
+          <button id="lang-en" class="lang-btn">EN</button>
         </div>
       </header>
 
@@ -34,14 +39,14 @@
       <div id="lan-banner" class="lan-banner glass hidden">
         <div class="lan-banner-label">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-          Andere Geräte im LAN öffnen:
+          <span data-i18n="lan_banner_label">Andere Geräte im LAN öffnen:</span>
         </div>
         <div class="lan-urls" id="lan-urls"></div>
-        <button id="copy-lan-btn" class="lan-copy-btn" title="Kopieren">
+        <button id="copy-lan-btn" class="lan-copy-btn" title="Kopieren" data-i18n-title="copy_title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
             <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
           </svg>
-          Kopieren
+          <span data-i18n="copy_btn">Kopieren</span>
         </button>
       </div>
 
@@ -50,18 +55,18 @@
         <div class="card glass">
           <div class="card-header">
             <span class="card-icon">➕</span>
-            <h2>Raum erstellen</h2>
+            <h2 data-i18n="create_room_title">Raum erstellen</h2>
           </div>
           <div class="form-group">
-            <label for="create-username">Dein Name</label>
-            <input type="text" id="create-username" placeholder="z.B. Tom" maxlength="30" autocomplete="off" />
+            <label for="create-username" data-i18n="your_name">Dein Name</label>
+            <input type="text" id="create-username" placeholder="z.B. Tom" data-i18n-placeholder="name_placeholder" maxlength="30" autocomplete="off" />
           </div>
           <div class="form-group">
-            <label for="room-name">Raumname</label>
-            <input type="text" id="room-name" placeholder="z.B. Gaming Lounge" maxlength="40" autocomplete="off" />
+            <label for="room-name" data-i18n="room_name_label">Raumname</label>
+            <input type="text" id="room-name" placeholder="z.B. Gaming Lounge" data-i18n-placeholder="room_placeholder" maxlength="40" autocomplete="off" />
           </div>
           <button id="create-btn" class="btn btn-primary">
-            <span>Raum erstellen</span>
+            <span data-i18n="create_room_btn">Raum erstellen</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
@@ -70,30 +75,30 @@
         <div class="card glass">
           <div class="card-header">
             <span class="card-icon">🔗</span>
-            <h2>Raum beitreten</h2>
+            <h2 data-i18n="join_room_title">Raum beitreten</h2>
           </div>
           <div class="form-group">
-            <label for="join-username">Dein Name</label>
-            <input type="text" id="join-username" placeholder="z.B. Lisa" maxlength="30" autocomplete="off" />
+            <label for="join-username" data-i18n="your_name">Dein Name</label>
+            <input type="text" id="join-username" placeholder="z.B. Lisa" data-i18n-placeholder="name_placeholder2" maxlength="30" autocomplete="off" />
           </div>
           <div class="form-group">
-            <label for="room-id-input">Raum-Code</label>
-            <input type="text" id="room-id-input" placeholder="z.B. A1B2C3" maxlength="6"
+            <label for="room-id-input" data-i18n="room_code_label">Raum-Code</label>
+            <input type="text" id="room-id-input" placeholder="z.B. A1B2C3" data-i18n-placeholder="code_placeholder" maxlength="6"
                    autocomplete="off" style="text-transform:uppercase;letter-spacing:0.15em;" />
           </div>
           <button id="join-btn" class="btn btn-secondary">
-            <span>Beitreten</span>
+            <span data-i18n="join_room_btn">Beitreten</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
           </button>
 
           <!-- Room List -->
           <div class="room-list-section">
             <div class="room-list-header">
-              <span>Offene Räume</span>
+              <span data-i18n="open_rooms">Offene Räume</span>
               <span class="room-count" id="room-count">0</span>
             </div>
             <div id="room-list" class="room-list">
-              <div class="room-list-empty">Keine Räume offen – erstelle einen!</div>
+              <div class="room-list-empty" data-i18n="no_rooms">Keine Räume offen – erstelle einen!</div>
             </div>
           </div>
         </div>
@@ -104,15 +109,15 @@
         <div class="audio-settings-inner">
           <span class="audio-settings-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-            Audio-Einstellungen
+            <span data-i18n="audio_settings">Audio-Einstellungen</span>
           </span>
           <div class="audio-device-row">
             <div class="form-group">
-              <label for="mic-select-lobby">🎤 Mikrofon</label>
+              <label for="mic-select-lobby"><span data-i18n="mic_label">🎤 Mikrofon</span></label>
               <select id="mic-select-lobby" class="device-select"></select>
             </div>
             <div class="form-group">
-              <label for="out-select-lobby">🔊 Ausgabe</label>
+              <label for="out-select-lobby"><span data-i18n="out_label">🔊 Ausgabe</span></label>
               <select id="out-select-lobby" class="device-select"></select>
             </div>
           </div>
@@ -134,10 +139,10 @@
             <div class="room-badge">🎙️</div>
             <div>
               <div class="room-name" id="display-room-name">Raum</div>
-              <div class="room-code-display">Code: <span id="display-room-code">------</span></div>
+              <div class="room-code-display"><span data-i18n="code_label">Code:</span> <span id="display-room-code">------</span></div>
             </div>
           </div>
-          <button id="copy-code-btn" class="icon-btn" title="Code kopieren">
+          <button id="copy-code-btn" class="icon-btn" title="Code kopieren" data-i18n-title="copy_code_title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
             </svg>
@@ -145,14 +150,14 @@
         </div>
 
         <div class="participants-section">
-          <div class="section-label">Teilnehmer</div>
+          <div class="section-label" data-i18n="participants">Teilnehmer</div>
           <div id="participants-list" class="participants-list"></div>
         </div>
 
         <div class="sidebar-footer">
           <button id="leave-btn" class="btn btn-danger btn-sm">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-            Verlassen
+            <span data-i18n="leave_btn">Verlassen</span>
           </button>
         </div>
       </aside>
@@ -177,7 +182,7 @@
           </div>
 
           <div class="controls-center">
-            <button id="mute-btn" class="control-btn mic-btn active" title="Mikrofon stummschalten">
+            <button id="mute-btn" class="control-btn mic-btn active" title="Mikrofon stummschalten" data-i18n-title="mute_title">
               <svg class="icon-unmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
                 <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
@@ -191,13 +196,13 @@
           </div>
 
           <div class="controls-right">
-            <button id="settings-toggle-btn" class="icon-btn" title="Audio-Einstellungen">
+            <button id="settings-toggle-btn" class="icon-btn" title="Audio-Einstellungen" data-i18n-title="audio_settings">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"/>
                 <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
               </svg>
             </button>
-            <button id="chat-toggle-btn" class="icon-btn" title="Chat ein-/ausblenden">
+            <button id="chat-toggle-btn" class="icon-btn" title="Chat ein-/ausblenden" data-i18n-title="chat_toggle_title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
               </svg>
@@ -209,21 +214,21 @@
         <!-- Settings Panel -->
         <div id="settings-panel" class="settings-panel glass hidden">
           <div class="chat-header">
-            <span>🎧 Audio-Einstellungen</span>
+            <span>🎧 <span data-i18n="audio_settings">Audio-Einstellungen</span></span>
             <button id="settings-close-btn" class="icon-btn sm">✕</button>
           </div>
           <div class="settings-body">
             <div class="form-group">
-              <label for="mic-select-room">🎤 Mikrofon</label>
+              <label for="mic-select-room"><span data-i18n="mic_label">🎤 Mikrofon</span></label>
               <select id="mic-select-room" class="device-select"></select>
             </div>
             <div class="form-group">
-              <label for="out-select-room">🔊 Audio-Ausgabe</label>
+              <label for="out-select-room"><span data-i18n="out_label2">🔊 Audio-Ausgabe</span></label>
               <select id="out-select-room" class="device-select"></select>
-              <div class="device-hint">* Nicht in allen Browsern unterstützt</div>
+              <div class="device-hint" data-i18n="device_hint">* Nicht in allen Browsern unterstützt</div>
             </div>
             <div id="mic-test-bar" class="mic-test-bar">
-              <span class="mic-test-label">Mic-Pegel</span>
+              <span class="mic-test-label" data-i18n="mic_level">Mic-Pegel</span>
               <div class="mic-level-track"><div id="mic-level-fill" class="mic-level-fill"></div></div>
             </div>
           </div>
@@ -232,13 +237,13 @@
         <!-- Chat Panel -->
         <div id="chat-panel" class="chat-panel glass hidden">
           <div class="chat-header">
-            <span>Chat</span>
+            <span data-i18n="chat">Chat</span>
             <button id="chat-close-btn" class="icon-btn sm">✕</button>
           </div>
           <div id="chat-messages" class="chat-messages"></div>
           <div class="chat-input-row">
-            <input type="text" id="chat-input" placeholder="Nachricht…" maxlength="500" autocomplete="off" />
-            <button id="chat-send-btn" class="btn btn-primary btn-sm">Senden</button>
+            <input type="text" id="chat-input" placeholder="Nachricht…" data-i18n-placeholder="chat_placeholder" maxlength="500" autocomplete="off" />
+            <button id="chat-send-btn" class="btn btn-primary btn-sm" data-i18n="send_btn">Senden</button>
           </div>
         </div>
       </main>
@@ -248,7 +253,7 @@
   <!-- Connecting overlay -->
   <div id="connecting-overlay" class="overlay hidden">
     <div class="spinner"></div>
-    <p>Verbinde…</p>
+    <p data-i18n="connecting">Verbinde…</p>
   </div>
 
   <div id="toast" class="toast hidden"></div>

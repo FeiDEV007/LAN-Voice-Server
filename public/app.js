@@ -82,6 +82,168 @@
   const outSelectRoom      = $('out-select-room');
   const micLevelFill       = $('mic-level-fill');
 
+  // ── i18n ───────────────────────────────────────
+  const translations = {
+    de: {
+      subtitle: "Lokales Sprach-Chat · Kein Internet nötig",
+      lan_banner_label: "Andere Geräte im LAN öffnen:",
+      copy_btn: "Kopieren",
+      copy_title: "Kopieren",
+      create_room_title: "Raum erstellen",
+      your_name: "Dein Name",
+      name_placeholder: "z.B. Tom",
+      room_name_label: "Raumname",
+      room_placeholder: "z.B. Gaming Lounge",
+      create_room_btn: "Raum erstellen",
+      join_room_title: "Raum beitreten",
+      name_placeholder2: "z.B. Lisa",
+      room_code_label: "Raum-Code",
+      code_placeholder: "z.B. A1B2C3",
+      join_room_btn: "Beitreten",
+      open_rooms: "Offene Räume",
+      no_rooms: "Keine Räume offen – erstelle einen!",
+      audio_settings: "Audio-Einstellungen",
+      mic_label: "🎤 Mikrofon",
+      out_label: "🔊 Ausgabe",
+      code_label: "Code:",
+      copy_code_title: "Code kopieren",
+      participants: "Teilnehmer",
+      leave_btn: "Verlassen",
+      mute_title: "Mikrofon stummschalten",
+      chat_toggle_title: "Chat ein-/ausblenden",
+      out_label2: "🔊 Audio-Ausgabe",
+      device_hint: "* Nicht in allen Browsern unterstützt",
+      mic_level: "Mic-Pegel",
+      chat: "Chat",
+      chat_placeholder: "Nachricht…",
+      send_btn: "Senden",
+      connecting: "Verbinde…",
+      
+      err_enter_code: "Bitte Raum-Code eingeben.",
+      err_mic_denied: "Mikrofon-Zugriff verweigert: ",
+      err_mic_switch: "❌ Mikrofon konnte nicht gewechselt werden: ",
+      mic_switched: "🎤 Mikrofon gewechselt",
+      out_switched: "🔊 Ausgabe gewechselt",
+      joined: "ist beigetreten",
+      left: "hat den Raum verlassen",
+      code_copied: "Raum-Code kopiert!",
+      url_copied: "📋 URL kopiert!",
+      all_urls_copied: "📋 Alle URLs kopiert!",
+      muted_status: "🔇 Stummgeschaltet",
+      ready_status: "🎤 Bereit",
+      speaking_status: "🗣️ Spricht",
+      me: " (Du)",
+      default_name: "Nutzer",
+      default_room: "Mein Raum",
+      no_messages: "Noch keine Nachrichten.",
+      default_device: "Gerät"
+    },
+    en: {
+      subtitle: "Local Voice Chat · No internet required",
+      lan_banner_label: "Open on other LAN devices:",
+      copy_btn: "Copy",
+      copy_title: "Copy",
+      create_room_title: "Create Room",
+      your_name: "Your Name",
+      name_placeholder: "e.g. Tom",
+      room_name_label: "Room Name",
+      room_placeholder: "e.g. Gaming Lounge",
+      create_room_btn: "Create Room",
+      join_room_title: "Join Room",
+      name_placeholder2: "e.g. Lisa",
+      room_code_label: "Room Code",
+      code_placeholder: "e.g. A1B2C3",
+      join_room_btn: "Join",
+      open_rooms: "Open Rooms",
+      no_rooms: "No rooms open – create one!",
+      audio_settings: "Audio Settings",
+      mic_label: "🎤 Microphone",
+      out_label: "🔊 Output",
+      code_label: "Code:",
+      copy_code_title: "Copy code",
+      participants: "Participants",
+      leave_btn: "Leave",
+      mute_title: "Mute microphone",
+      chat_toggle_title: "Toggle chat",
+      out_label2: "🔊 Audio Output",
+      device_hint: "* Not supported in all browsers",
+      mic_level: "Mic Level",
+      chat: "Chat",
+      chat_placeholder: "Message…",
+      send_btn: "Send",
+      connecting: "Connecting…",
+      
+      err_enter_code: "Please enter a room code.",
+      err_mic_denied: "Microphone access denied: ",
+      err_mic_switch: "❌ Could not switch microphone: ",
+      mic_switched: "🎤 Microphone switched",
+      out_switched: "🔊 Output switched",
+      joined: "joined the room",
+      left: "left the room",
+      code_copied: "Room code copied!",
+      url_copied: "📋 URL copied!",
+      all_urls_copied: "📋 All URLs copied!",
+      muted_status: "🔇 Muted",
+      ready_status: "🎤 Ready",
+      speaking_status: "🗣️ Speaking",
+      me: " (You)",
+      default_name: "User",
+      default_room: "My Room",
+      no_messages: "No messages yet.",
+      default_device: "Device"
+    }
+  };
+
+  let currentLang = localStorage.getItem('lanvoice_lang') || 'de';
+
+  function i18n(key) {
+    return translations[currentLang][key] || key;
+  }
+
+  function applyLanguage() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = i18n(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      el.placeholder = i18n(el.getAttribute('data-i18n-placeholder'));
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      el.title = i18n(el.getAttribute('data-i18n-title'));
+    });
+    
+    document.body.classList.toggle('lang-en', currentLang === 'en');
+    
+    const btnDe = $('lang-de');
+    const btnEn = $('lang-en');
+    if (btnDe) btnDe.classList.toggle('active', currentLang === 'de');
+    if (btnEn) btnEn.classList.toggle('active', currentLang === 'en');
+    
+    if (roomList && (roomList.children.length === 0 || roomList.querySelector('.room-list-empty'))) {
+      roomList.innerHTML = `<div class="room-list-empty" data-i18n="no_rooms">${i18n('no_rooms')}</div>`;
+    }
+    if (chatMessages && chatMessages.querySelector('.chat-msg-empty')) {
+      chatMessages.innerHTML = `<div class="chat-msg-empty">${i18n('no_messages')}</div>`;
+    }
+    
+    for (const [id, p] of participants) {
+      updateMutedUI(id, p.muted);
+      const isSpeaking = document.getElementById('participant-' + id)?.classList.contains('speaking');
+      updateSpeaking(id, isSpeaking);
+      const cardEl = document.getElementById('voice-card-' + id);
+      if (cardEl && id === myId) {
+        const nameDiv = cardEl.querySelector('.voice-name');
+        if (nameDiv) nameDiv.textContent = p.username + i18n('me');
+      }
+    }
+  }
+
+  const langDe = $('lang-de');
+  if (langDe) langDe.addEventListener('click', () => { currentLang = 'de'; localStorage.setItem('lanvoice_lang', 'de'); applyLanguage(); });
+  const langEn = $('lang-en');
+  if (langEn) langEn.addEventListener('click', () => { currentLang = 'en'; localStorage.setItem('lanvoice_lang', 'en'); applyLanguage(); });
+
+  applyLanguage();
+
   // ── WebSocket connection ───────────────────────
   function connectWS() {
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
@@ -170,7 +332,7 @@
   function renderRoomList(rooms) {
     roomCount.textContent = rooms.length;
     if (rooms.length === 0) {
-      roomList.innerHTML = '<div class="room-list-empty">Keine Räume offen – erstelle einen!</div>';
+      roomList.innerHTML = `<div class="room-list-empty" data-i18n="no_rooms">${i18n('no_rooms')}</div>`;
       return;
     }
     roomList.innerHTML = '';
@@ -193,8 +355,8 @@
 
   // ── Lobby actions ──────────────────────────────
   createBtn.addEventListener('click', async () => {
-    const name = createUsername.value.trim() || 'Nutzer';
-    const rName = roomNameInput.value.trim() || 'Mein Raum';
+    const name = createUsername.value.trim() || i18n('default_name');
+    const rName = roomNameInput.value.trim() || i18n('default_room');
     clearLobbyError();
     await requestMic();
     send({ type: 'create_room', username: name, name: rName });
@@ -202,9 +364,9 @@
   });
 
   joinBtn.addEventListener('click', async () => {
-    const name = joinUsername.value.trim() || 'Nutzer';
+    const name = joinUsername.value.trim() || i18n('default_name');
     const code = roomIdInput.value.trim().toUpperCase();
-    if (!code) { showLobbyError('Bitte Raum-Code eingeben.'); return; }
+    if (!code) { showLobbyError(i18n('err_enter_code')); return; }
     clearLobbyError();
     await requestMic();
     send({ type: 'join_room', username: name, roomId: code });
@@ -228,7 +390,7 @@
       localStream = await navigator.mediaDevices.getUserMedia(constraints);
     } catch (err) {
       showConnecting(false);
-      showLobbyError('Mikrofon-Zugriff verweigert: ' + err.message);
+      showLobbyError(i18n('err_mic_denied') + err.message);
       throw err;
     }
     // Nach erster Erlaubnis: Geräteliste befüllen
@@ -273,7 +435,7 @@
       list.forEach((d, i) => {
         const opt = document.createElement('option');
         opt.value = d.deviceId;
-        opt.textContent = d.label || `Gerät ${i + 1}`;
+        opt.textContent = d.label || `${i18n('default_device')} ${i + 1}`;
         if (d.deviceId === selectedId) opt.selected = true;
         el.appendChild(opt);
       });
@@ -302,7 +464,7 @@
         video: false
       });
     } catch (err) {
-      showToast('❌ Mikrofon konnte nicht gewechselt werden: ' + err.message);
+      showToast(i18n('err_mic_switch') + err.message);
       return;
     }
 
@@ -325,7 +487,7 @@
 
     // Analyser neu aufbauen
     setupAudioAnalyser();
-    showToast('🎤 Mikrofon gewechselt');
+    showToast(i18n('mic_switched'));
   }
 
   async function switchOutput(deviceId) {
@@ -336,7 +498,7 @@
         catch (e) { console.warn('[switchOut]', e); }
       }
     }
-    showToast('🔊 Ausgabe gewechselt');
+    showToast(i18n('out_switched'));
   }
 
   // Hot-Plug: Geräte-änderung
@@ -390,7 +552,7 @@
     participantsList.innerHTML = '';
     voiceGrid.innerHTML = '';
     participants.clear();
-    chatMessages.innerHTML = '<div class="chat-msg-empty">Noch keine Nachrichten.</div>';
+    chatMessages.innerHTML = `<div class="chat-msg-empty">${i18n('no_messages')}</div>`;
 
     // Geräteliste für Room-Settings-Panel aktualisieren
     await populateDevices();
@@ -419,14 +581,14 @@
     participants.set(msg.id, { username: msg.username, muted: msg.muted });
     addParticipantUI(msg.id, msg.username, msg.muted);
     addVoiceCard(msg.id, msg.username, msg.muted);
-    showToast(`${msg.username} ist beigetreten`);
+    showToast(`${msg.username} ${i18n('joined')}`);
     // They will send offer to us
   }
 
   // ── Participant left ───────────────────────────
   function onParticipantLeft(id) {
     const p = participants.get(id);
-    if (p) showToast(`${p.username} hat den Raum verlassen`);
+    if (p) showToast(`${p.username} ${i18n('left')}`);
     participants.delete(id);
     removeParticipantUI(id);
     removeVoiceCard(id);
@@ -473,7 +635,7 @@
   // ── Copy room code ─────────────────────────────
   copyCodeBtn.addEventListener('click', () => {
     if (currentRoomId) {
-      navigator.clipboard.writeText(currentRoomId).then(() => showToast('Raum-Code kopiert!'));
+      navigator.clipboard.writeText(currentRoomId).then(() => showToast(i18n('code_copied')));
     }
   });
 
@@ -560,8 +722,8 @@
     const isMe = id === myId;
     el.innerHTML = `
       <div class="participant-avatar">${initial}</div>
-      <span class="participant-name${isMe ? ' me' : ''}">${escHtml(username)}</span>
-      <span class="muted-icon" title="Stummgeschaltet">🔇</span>`;
+      <span class="participant-name${isMe ? ' me' : ''}">${escHtml(username)}${isMe ? i18n('me') : ''}</span>
+      <span class="muted-icon" title="${i18n('muted_status')}">🔇</span>`;
     participantsList.appendChild(el);
   }
 
@@ -578,7 +740,7 @@
       cardEl.classList.toggle('muted', muted);
       const statusEl = cardEl.querySelector('.voice-status');
       if (statusEl && !cardEl.classList.contains('speaking')) {
-        statusEl.textContent = muted ? '🔇 Stummgeschaltet' : '🎤 Bereit';
+        statusEl.textContent = muted ? i18n('muted_status') : i18n('ready_status');
       }
     }
   }
@@ -593,7 +755,7 @@
       const waveBars = cardEl.querySelector('.wave-bars');
       if (statusEl) {
         const isMutedCard = cardEl.classList.contains('muted');
-        statusEl.textContent = isMutedCard ? '🔇 Stummgeschaltet' : (speaking ? '🗣️ Spricht' : '🎤 Bereit');
+        statusEl.textContent = isMutedCard ? i18n('muted_status') : (speaking ? i18n('speaking_status') : i18n('ready_status'));
       }
       if (waveBars) waveBars.classList.toggle('hidden', !speaking);
     }
@@ -608,13 +770,13 @@
     const isMe = id === myId;
     card.innerHTML = `
       <div class="voice-avatar">${initial}</div>
-      <div class="voice-name">${escHtml(username)}${isMe ? ' (Du)' : ''}</div>
+      <div class="voice-name">${escHtml(username)}${isMe ? i18n('me') : ''}</div>
       <div class="wave-bars hidden">
         <div class="wave-bar"></div><div class="wave-bar"></div>
         <div class="wave-bar"></div><div class="wave-bar"></div>
         <div class="wave-bar"></div>
       </div>
-      <div class="voice-status">${muted ? '🔇 Stummgeschaltet' : '🎤 Bereit'}</div>`;
+      <div class="voice-status">${muted ? i18n('muted_status') : i18n('ready_status')}</div>`;
     voiceGrid.appendChild(card);
   }
 
