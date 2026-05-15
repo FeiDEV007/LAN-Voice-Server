@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build output – users build it themselves with `npm run build`
+dist/
+
+# SSL / TLS certificates (generated at runtime)
+*.pem
+*.key
+*.crt
+*.cert
+
+# Environment variables
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+*.log
+npm-debug.log*
+
+# pkg cache
+.pkg-cache/

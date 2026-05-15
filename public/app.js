@@ -748,7 +748,41 @@
       .replace(/"/g, '&quot;');
   }
 
+  // ── LAN IP Banner ─────────────────────────────
+  async function fetchLanInfo() {
+    try {
+      const res  = await fetch('/api/info');
+      const data = await res.json();
+      const banner  = $('lan-banner');
+      const urlsDiv = $('lan-urls');
+      const copyBtn = $('copy-lan-btn');
+
+      if (!data.ips || data.ips.length === 0) return;
+
+      const urls = data.ips.map(ip => `https://${ip}:${data.port}`);
+
+      urlsDiv.innerHTML = '';
+      urls.forEach(url => {
+        const chip = document.createElement('span');
+        chip.className = 'lan-url-chip';
+        chip.textContent = url;
+        chip.title = 'Klicken zum Kopieren';
+        chip.addEventListener('click', () => {
+          navigator.clipboard.writeText(url).then(() => showToast('📋 URL kopiert!'));
+        });
+        urlsDiv.appendChild(chip);
+      });
+
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(urls.join('\n')).then(() => showToast('📋 Alle URLs kopiert!'));
+      });
+
+      banner.classList.remove('hidden');
+    } catch { /* kein Banner wenn API nicht erreichbar */ }
+  }
+
   // ── Init ──────────────────────────────────────
   connectWS();
+  fetchLanInfo();
 
 })();

@@ -1,7 +1,18 @@
 {
   "name": "lan-voice-server",
   "version": "1.0.0",
-  "description": "Local LAN VoIP application using WebRTC",
+  "description": "Self-hosted peer-to-peer voice chat for local networks using WebRTC and Node.js — no internet required",
+  "author": "Tom",
+  "license": "MIT",
+  "keywords": ["voip", "webrtc", "lan", "voice-chat", "self-hosted", "local-network", "websocket"],
+  "homepage": "https://github.com/YOUR_USERNAME/lan-voice-server#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/lan-voice-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/lan-voice-server/issues"
+  },
   "main": "server.js",
   "bin": "server.js",
   "scripts": {

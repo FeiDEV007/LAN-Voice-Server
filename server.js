@@ -72,6 +72,11 @@ http.createServer((req, res) => {
 
 app.use(express.static(staticRoot));
 
+// ── API: Server-Info (LAN-IP für die Lobby-Anzeige) ──────────────────────
+app.get('/api/info', (req, res) => {
+  res.json({ ips: getLocalIPs(), port: PORT });
+});
+
 // Rooms: { roomId: { name, clients: Map<clientId, { ws, username, muted }> } }
 const rooms = new Map();
 
