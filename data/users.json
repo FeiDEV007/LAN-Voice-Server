@@ -1,0 +1,21 @@
+{
+  "users": [
+    {
+      "id": "54696282-dae7-4a98-b693-fce1ed093b85",
+      "username": "jusabian",
+      "passwordHash": "$2a$10$Rui5GOL./IG8T0aaNSJzMOO4VPGhuoRaZnrS0SLNM51EsbNxL9V16",
+      "createdAt": "2026-05-16T08:33:38.301Z",
+      "role": "user",
+      "isActive": true
+    },
+    {
+      "id": "8f2dae6c-74c0-4778-802f-80393873ab2f",
+      "username": "admin",
+      "passwordHash": "$2a$10$TRYfFYDuewefGmca.2KNB.wKWgYWglsKIo7WDgNwG.JCM0VFPpAlq",
+      "role": "admin",
+      "isActive": true,
+      "createdAt": "2026-05-16T08:39:32.122Z",
+      "lastLoginAt": "2026-05-16T08:43:59.760Z"
+    }
+  ]
+}

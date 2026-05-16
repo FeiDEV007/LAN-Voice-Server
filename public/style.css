@@ -86,6 +86,15 @@ html, body {
   justify-content: center;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+}
+
 .logo {
   display: flex;
   align-items: center;
@@ -138,9 +147,6 @@ html, body {
   border: 1px solid var(--border-bright);
   border-radius: 999px;
   padding: 0.3rem 0.5rem;
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
 }
 
 .lang-btn {
@@ -167,6 +173,44 @@ html, body {
   color: var(--border-bright);
   font-size: 0.8rem;
   user-select: none;
+}
+
+.auth-gate {
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.auth-head h2 {
+  font-size: 1.05rem;
+  margin-bottom: 0.2rem;
+}
+
+.auth-head p {
+  color: var(--text-2);
+  font-size: 0.86rem;
+}
+
+.auth-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.auth-actions {
+  display: flex;
+  gap: 0.65rem;
+}
+
+@media (max-width: 640px) {
+  .auth-grid { grid-template-columns: 1fr; }
+  .auth-actions { flex-direction: column; }
+  .header-actions {
+    top: 1rem;
+    right: 1rem;
+  }
 }
 
 /* ── Cards ── */

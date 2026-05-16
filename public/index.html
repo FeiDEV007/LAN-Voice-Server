@@ -28,12 +28,38 @@
             <p class="subtitle" data-i18n="subtitle">Lokales Sprach-Chat · Kein Internet nötig</p>
           </div>
         </div>
-        <div class="lang-toggle">
-          <button id="lang-de" class="lang-btn active">DE</button>
-          <span class="lang-sep">|</span>
-          <button id="lang-en" class="lang-btn">EN</button>
+        <div class="header-actions">
+          <button id="admin-btn" class="btn btn-secondary btn-sm hidden">Admin</button>
+          <button id="logout-btn" class="btn btn-secondary btn-sm hidden">Logout</button>
+          <div class="lang-toggle">
+            <button id="lang-de" class="lang-btn active">DE</button>
+            <span class="lang-sep">|</span>
+            <button id="lang-en" class="lang-btn">EN</button>
+          </div>
         </div>
       </header>
+
+      <!-- Auth Gate -->
+      <div id="auth-gate" class="auth-gate glass">
+        <div class="auth-head">
+          <h2>Login</h2>
+          <p>Bitte einloggen. Neue Nutzer erstellt nur der Admin.</p>
+        </div>
+        <div class="auth-grid">
+          <div class="form-group">
+            <label for="auth-username">Benutzername</label>
+            <input type="text" id="auth-username" maxlength="30" autocomplete="username" />
+          </div>
+          <div class="form-group">
+            <label for="auth-password">Passwort</label>
+            <input type="password" id="auth-password" minlength="8" autocomplete="current-password" />
+          </div>
+        </div>
+        <div class="auth-actions">
+          <button id="login-btn" class="btn btn-primary btn-sm">Einloggen</button>
+        </div>
+        <div id="auth-error" class="error-toast hidden"></div>
+      </div>
 
       <!-- LAN-Adresse Banner -->
       <div id="lan-banner" class="lan-banner glass hidden">

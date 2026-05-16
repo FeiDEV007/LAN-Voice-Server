@@ -20,6 +20,7 @@ LAN Voice Server is a lightweight, self-hosted voice chat application for local 
 - 🎤 **Multi-room** – create and join named voice rooms
 - 💬 **In-room chat** – text chat alongside voice
 - 🔇 **Mute indicator** – shows who is muted in real time
+- 👤 **User login** – login with persistent accounts (JWT + hashed passwords)
 - 🖥️ **Runs as a single `.exe`** – portable Windows binary via [pkg](https://github.com/vercel/pkg) (no Node.js installation required for end users)
 - 🌐 **Works across browsers** – Chrome, Edge, Firefox
 
@@ -56,14 +57,47 @@ Download the latest `LAN Voice Server.exe` from the [Releases](../../releases) p
 
 ## 🔧 Configuration
 
+Create a `.env` file in the project root (or copy `.env.example` to `.env`):
+
+```env
+PORT=8443
+AUTH_ENABLED=true
+JWT_SECRET=replace-with-a-long-random-secret
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=replace-with-a-strong-password
+```
+
 | Environment variable | Default | Description |
 |---|---|---|
 | `PORT` | `3443` | HTTPS/WSS port |
+| `AUTH_ENABLED` | `true` | `false` = LAN mode without login, `true` = internet mode with login/auth |
+| `JWT_SECRET` | `change-me-in-production` | Secret key for login tokens |
+| `ADMIN_USERNAME` | _(empty)_ | Optional bootstrap admin username |
+| `ADMIN_PASSWORD` | _(empty)_ | Optional bootstrap admin password (min 8 chars) |
 
 Example:
 ```bash
-PORT=8443 npm start
+npm start
 ```
+
+## 🔐 Authentication
+
+- `AUTH_ENABLED=false`: LAN mode, no login required.
+- `AUTH_ENABLED=true`: login/auth enabled.
+- Public registration is disabled.
+- New users can only be created by an admin in the `/admin` panel.
+- Passwords are stored as bcrypt hashes.
+- A JWT is stored in browser localStorage and used for API/WebSocket authentication.
+- User data is stored in `data/users.json` (or next to the `.exe` in packaged mode).
+
+### Admin setup (new installation)
+
+- Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` when starting the server.
+- On startup, the server creates that admin user if missing.
+- If the user already exists, it is promoted/reactivated as admin and the password is updated from `ADMIN_PASSWORD`.
+- Admin panel is available at `/admin` after login.
+
+> For internet-facing deployments, always set a strong `JWT_SECRET` and use a valid TLS certificate.
 
 ## 🏗️ Build the Windows `.exe`
 

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LAN Voice Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0f1a;
+      --surface: #1a1d2e;
+      --border: rgba(255,255,255,0.12);
+      --text: #f0f0ff;
+      --text-2: #9aa0c8;
+      --accent: #7c5cfc;
+      --danger: #fc5c7c;
+      --ok: #4cfc8c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, sans-serif;
+      background: radial-gradient(circle at 10% 0%, #232640, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .header, .panel {
+      background: rgba(26, 29, 46, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      backdrop-filter: blur(10px);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .title h1 { margin: 0; font-size: 1.2rem; }
+    .title p { margin: 3px 0 0; color: var(--text-2); font-size: 0.9rem; }
+    .actions { display: flex; gap: 8px; }
+    button {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    button.primary { background: linear-gradient(135deg, var(--accent), #5e9bfc); border: none; }
+    button.danger { background: linear-gradient(135deg, var(--danger), #fc7c5c); border: none; }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      border-bottom: 1px solid rgba(255,255,255,0.09);
+      text-align: left;
+      padding: 9px 8px;
+      font-size: 0.87rem;
+      vertical-align: top;
+    }
+    th { color: var(--text-2); font-weight: 600; }
+    .row-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .chip.admin { background: rgba(124,92,252,0.2); color: #b9a5ff; }
+    .chip.user { background: rgba(255,255,255,0.1); color: #d7d8ec; }
+    .chip.on { background: rgba(76,252,140,0.18); color: var(--ok); }
+    .chip.off { background: rgba(252,92,124,0.18); color: #ff97ad; }
+    .error {
+      color: #ff97ad;
+      border: 1px solid rgba(252,92,124,0.45);
+      border-radius: 8px;
+      padding: 8px;
+      display: none;
+    }
+    .error.show { display: block; }
+    .create-user {
+      display: grid;
+      grid-template-columns: 1fr 1fr 140px auto;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .create-user input,
+    .create-user select {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      padding: 8px;
+      font-size: 0.85rem;
+    }
+    @media (max-width: 760px) {
+      body { padding: 12px; }
+      .header { flex-direction: column; align-items: flex-start; }
+      .actions { width: 100%; }
+      .actions button { flex: 1; }
+      .create-user {
+        grid-template-columns: 1fr;
+      }
+      table, thead, tbody, tr, td, th { display: block; }
+      thead { display: none; }
+      tr { border-bottom: 1px solid rgba(255,255,255,0.12); padding: 8px 0; }
+      td { border: none; padding: 6px 0; }
+      td::before { content: attr(data-label) ': '; color: var(--text-2); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">
+        <h1>Admin: User-Verwaltung</h1>
+        <p id="whoami">Lade Benutzer…</p>
+      </div>
+      <div class="actions">
+        <button id="back-btn">Zur Lobby</button>
+        <button id="reload-btn" class="primary">Neu laden</button>
+        <button id="logout-btn" class="danger">Logout</button>
+      </div>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <div class="panel">
+      <div class="create-user">
+        <input id="new-username" type="text" maxlength="30" placeholder="Neuer Benutzername" />
+        <input id="new-password" type="password" minlength="8" placeholder="Startpasswort (min. 8 Zeichen)" />
+        <select id="new-role">
+          <option value="user">user</option>
+          <option value="admin">admin</option>
+        </select>
+        <button id="create-user-btn" class="primary">Nutzer anlegen</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Rolle</th>
+            <th>Status</th>
+            <th>Erstellt</th>
+            <th>Letzter Login</th>
+            <th>Aktionen</th>
+          </tr>
+        </thead>
+        <tbody id="users-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

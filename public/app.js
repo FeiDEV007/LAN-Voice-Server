@@ -8,6 +8,9 @@
 
   // ── State ──────────────────────────────────────
   let ws = null;
+  let authEnabled = true;
+  let authToken = localStorage.getItem('lanvoice_token') || '';
+  let currentUser = null;
   let myId = null;
   let myUsername = '';
   let currentRoomId = null;
@@ -50,6 +53,13 @@
   const roomNameInput      = $('room-name');
   const joinUsername       = $('join-username');
   const roomIdInput        = $('room-id-input');
+  const adminBtn           = $('admin-btn');
+  const logoutBtn          = $('logout-btn');
+  const authGate           = $('auth-gate');
+  const authUsername       = $('auth-username');
+  const authPassword       = $('auth-password');
+  const loginBtn           = $('login-btn');
+  const authError          = $('auth-error');
   const roomList           = $('room-list');
   const roomCount          = $('room-count');
   const lobbyError         = $('lobby-error');
@@ -246,8 +256,12 @@
 
   // ── WebSocket connection ───────────────────────
   function connectWS() {
+    if (authEnabled && !authToken) return;
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-    ws = new WebSocket(`${protocol}://${location.host}`);
+    const wsUrl = authEnabled
+      ? `${protocol}://${location.host}?token=${encodeURIComponent(authToken)}`
+      : `${protocol}://${location.host}`;
+    ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
       console.log('[WS] Connected');
@@ -260,7 +274,7 @@
 
     ws.onclose = () => {
       console.log('[WS] Closed – reconnect in 2s');
-      setTimeout(connectWS, 2000);
+      if (!authEnabled || authToken) setTimeout(connectWS, 2000);
     };
 
     ws.onerror = (err) => {
@@ -271,6 +285,125 @@
   function send(obj) {
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(obj));
+    }
+  }
+
+  function setAuthError(message) {
+    authError.textContent = message || '';
+    authError.classList.toggle('hidden', !message);
+  }
+
+  async function authRequest(path, payload) {
+    const res = await fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.message || 'Authentifizierung fehlgeschlagen.');
+    }
+    return data;
+  }
+
+  function applyAuthenticatedUser(user, token) {
+    currentUser = user;
+    authToken = token;
+    localStorage.setItem('lanvoice_token', token);
+    myUsername = user.username;
+    createUsername.value = user.username;
+    joinUsername.value = user.username;
+    createUsername.readOnly = true;
+    joinUsername.readOnly = true;
+    authGate.classList.add('hidden');
+    logoutBtn.classList.remove('hidden');
+    adminBtn.classList.toggle('hidden', user.role !== 'admin');
+    setAuthError('');
+    clearLobbyError();
+    connectWS();
+    fetchLanInfo();
+  }
+
+  function applyLanMode() {
+    currentUser = null;
+    authToken = '';
+    localStorage.removeItem('lanvoice_token');
+    authGate.classList.add('hidden');
+    adminBtn.classList.add('hidden');
+    logoutBtn.classList.add('hidden');
+    createUsername.readOnly = false;
+    joinUsername.readOnly = false;
+    setAuthError('');
+    clearLobbyError();
+    connectWS();
+    fetchLanInfo();
+  }
+
+  function logout() {
+    authToken = '';
+    currentUser = null;
+    myUsername = '';
+    localStorage.removeItem('lanvoice_token');
+
+    if (localStream) {
+      localStream.getTracks().forEach(t => t.stop());
+      localStream = null;
+    }
+    for (const [id] of peers) closePeer(id);
+    peers.clear();
+    participants.clear();
+    if (audioCtx) { audioCtx.close(); audioCtx = null; analyser = null; }
+    if (speakingInterval) { clearInterval(speakingInterval); speakingInterval = null; }
+    if (micLevelInterval) { clearInterval(micLevelInterval); micLevelInterval = null; }
+
+    if (ws) {
+      ws.close();
+      ws = null;
+    }
+    authGate.classList.remove('hidden');
+    adminBtn.classList.add('hidden');
+    logoutBtn.classList.add('hidden');
+    createUsername.readOnly = false;
+    joinUsername.readOnly = false;
+    createUsername.value = '';
+    joinUsername.value = '';
+    roomNameInput.value = '';
+    roomIdInput.value = '';
+    lobbyScreen.classList.add('active');
+    roomScreen.style.display = 'none';
+  }
+
+  async function bootstrapAuth() {
+    if (!authEnabled) {
+      applyLanMode();
+      return;
+    }
+
+    if (!authToken) {
+      authGate.classList.remove('hidden');
+      logoutBtn.classList.add('hidden');
+      return;
+    }
+    try {
+      const res = await fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${authToken}` }
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.user) throw new Error('Session ungültig');
+      applyAuthenticatedUser(data.user, authToken);
+    } catch {
+      logout();
+      setAuthError('Session abgelaufen. Bitte neu einloggen.');
+    }
+  }
+
+  async function loadConfig() {
+    try {
+      const res = await fetch('/api/config');
+      const data = await res.json().catch(() => ({}));
+      authEnabled = data.authEnabled !== false;
+    } catch {
+      authEnabled = true;
     }
   }
 
@@ -354,22 +487,56 @@
   }
 
   // ── Lobby actions ──────────────────────────────
+  loginBtn.addEventListener('click', async () => {
+    if (!authEnabled) return;
+    const username = authUsername.value.trim();
+    const password = authPassword.value;
+    setAuthError('');
+    try {
+      const data = await authRequest('/api/auth/login', { username, password });
+      applyAuthenticatedUser(data.user, data.token);
+      authPassword.value = '';
+      showToast(`Willkommen, ${data.user.username}!`);
+    } catch (err) {
+      setAuthError(err.message);
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    logout();
+    showToast('Abgemeldet');
+  });
+
+  adminBtn.addEventListener('click', () => {
+    location.href = '/admin';
+  });
+
+  [authUsername, authPassword].forEach(el => {
+    el.addEventListener('keydown', e => { if (e.key === 'Enter' && authEnabled) loginBtn.click(); });
+  });
+
   createBtn.addEventListener('click', async () => {
-    const name = createUsername.value.trim() || i18n('default_name');
+    if (authEnabled && !currentUser) { setAuthError('Bitte zuerst einloggen.'); return; }
+    const name = authEnabled
+      ? currentUser.username
+      : (createUsername.value.trim() || i18n('default_name'));
     const rName = roomNameInput.value.trim() || i18n('default_room');
     clearLobbyError();
     await requestMic();
-    send({ type: 'create_room', username: name, name: rName });
+    send({ type: 'create_room', name: rName, username: name });
     myUsername = name;
   });
 
   joinBtn.addEventListener('click', async () => {
-    const name = joinUsername.value.trim() || i18n('default_name');
+    if (authEnabled && !currentUser) { setAuthError('Bitte zuerst einloggen.'); return; }
+    const name = authEnabled
+      ? currentUser.username
+      : (joinUsername.value.trim() || i18n('default_name'));
     const code = roomIdInput.value.trim().toUpperCase();
     if (!code) { showLobbyError(i18n('err_enter_code')); return; }
     clearLobbyError();
     await requestMic();
-    send({ type: 'join_room', username: name, roomId: code });
+    send({ type: 'join_room', roomId: code, username: name });
     myUsername = name;
   });
 
@@ -944,7 +1111,6 @@
   }
 
   // ── Init ──────────────────────────────────────
-  connectWS();
-  fetchLanInfo();
+  loadConfig().then(bootstrapAuth);
 
 })();
