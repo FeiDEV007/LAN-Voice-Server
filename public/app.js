@@ -18,7 +18,6 @@
   let isMuted = false;
   let masterVolume = 1.0;
   let unreadChat = 0;
-  let chatOpen = false;
   let settingsOpen = false;
 
   let selectedMicId  = null;  // deviceId des aktiven Mikrofons
@@ -73,13 +72,9 @@
   const iconMuted          = muteBtn.querySelector('.icon-muted');
   const leaveBtn           = $('leave-btn');
   const volumeSlider       = $('volume-slider');
-  const chatToggleBtn      = $('chat-toggle-btn');
-  const chatPanel          = $('chat-panel');
-  const chatCloseBtn       = $('chat-close-btn');
   const chatMessages       = $('chat-messages');
   const chatInput          = $('chat-input');
   const chatSendBtn        = $('chat-send-btn');
-  const chatBadge          = $('chat-badge');
   const connectingOverlay  = $('connecting-overlay');
   // Audio device UI
   const audioSettingsLobby = $('audio-settings-lobby');
@@ -835,21 +830,6 @@
   });
 
   // ── Chat ──────────────────────────────────────
-  chatToggleBtn.addEventListener('click', () => {
-    chatOpen = !chatOpen;
-    chatPanel.classList.toggle('hidden', !chatOpen);
-    if (chatOpen) {
-      unreadChat = 0;
-      chatBadge.classList.add('hidden');
-      chatInput.focus();
-    }
-  });
-
-  chatCloseBtn.addEventListener('click', () => {
-    chatOpen = false;
-    chatPanel.classList.add('hidden');
-  });
-
   chatSendBtn.addEventListener('click', sendChat);
   chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
 
@@ -878,12 +858,6 @@
       <div class="chat-msg-text">${escHtml(text)}</div>`;
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
-    if (!chatOpen && !isMine) {
-      unreadChat++;
-      chatBadge.textContent = unreadChat;
-      chatBadge.classList.remove('hidden');
-    }
   }
 
   // ── Participant UI ─────────────────────────────

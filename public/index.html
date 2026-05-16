@@ -228,12 +228,6 @@
                 <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
               </svg>
             </button>
-            <button id="chat-toggle-btn" class="icon-btn" title="Chat ein-/ausblenden" data-i18n-title="chat_toggle_title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              </svg>
-              <span class="chat-badge hidden" id="chat-badge">0</span>
-            </button>
           </div>
         </div>
 
@@ -260,19 +254,19 @@
           </div>
         </div>
 
-        <!-- Chat Panel -->
-        <div id="chat-panel" class="chat-panel glass hidden">
-          <div class="chat-header">
-            <span data-i18n="chat">Chat</span>
-            <button id="chat-close-btn" class="icon-btn sm">✕</button>
-          </div>
-          <div id="chat-messages" class="chat-messages"></div>
-          <div class="chat-input-row">
-            <input type="text" id="chat-input" placeholder="Nachricht…" data-i18n-placeholder="chat_placeholder" maxlength="500" autocomplete="off" />
-            <button id="chat-send-btn" class="btn btn-primary btn-sm" data-i18n="send_btn">Senden</button>
-          </div>
-        </div>
       </main>
+
+      <!-- Chat Sidebar -->
+      <aside class="chat-sidebar glass">
+        <div class="chat-header">
+          <span data-i18n="chat">Chat</span>
+        </div>
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="Nachricht…" data-i18n-placeholder="chat_placeholder" maxlength="500" autocomplete="off" />
+          <button id="chat-send-btn" class="btn btn-primary btn-sm" data-i18n="send_btn">Senden</button>
+        </div>
+      </aside>
     </div>
   </div>
 
