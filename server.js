@@ -28,7 +28,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'change-me-in-production';
 const ADMIN_USERNAME = sanitizeUsername(process.env.ADMIN_USERNAME || '');
 const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || '');
 const AUTH_ENABLED = String(process.env.AUTH_ENABLED || 'true').toLowerCase() !== 'false';
-const TLS_ENABLED  = String(process.env.SERVER_TLS_ENABLED || 'true').toLowerCase() !== 'false';
+const TLS_ENABLED  = String(process.env.SERVER_TLS_ENABLED || 'false').toLowerCase() !== 'false';
 const USERS_FILE = isPkg
   ? path.join(path.dirname(process.execPath), 'data', 'users.json')
   : path.join(__dirname, 'data', 'users.json');
