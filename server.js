@@ -370,6 +370,8 @@ const wss = new WebSocketServer({ server });
 
 app.use(express.static(staticRoot));
 
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(staticRoot, 'admin.html'));
 });
@@ -622,7 +624,7 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-const PORT = process.env.PORT || 3443;
+const PORT = process.env.PORT || 3000;
 async function start() {
   if (AUTH_ENABLED) {
     await bootstrapAdminIfConfigured();
