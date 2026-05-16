@@ -28,6 +28,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'change-me-in-production';
 const ADMIN_USERNAME = sanitizeUsername(process.env.ADMIN_USERNAME || '');
 const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || '');
 const AUTH_ENABLED = String(process.env.AUTH_ENABLED || 'true').toLowerCase() !== 'false';
+const TLS_ENABLED  = String(process.env.SERVER_TLS_ENABLED || 'true').toLowerCase() !== 'false';
 const USERS_FILE = isPkg
   ? path.join(path.dirname(process.execPath), 'data', 'users.json')
   : path.join(__dirname, 'data', 'users.json');
@@ -352,15 +353,20 @@ function generateCert(ips) {
   };
 }
 
-const pems  = generateCert(getLocalIPs());
-const server = https.createServer({ key: pems.key, cert: pems.cert }, app);
-const wss   = new WebSocketServer({ server });
-
-// HTTP → HTTPS Redirect
-http.createServer((req, res) => {
-  res.writeHead(301, { Location: `https://${req.headers.host.split(':')[0]}:${PORT}${req.url}` });
-  res.end();
-}).listen(80, '0.0.0.0').on('error', () => { /* Port 80 nicht verfügbar – kein Problem */ });
+let server;
+if (TLS_ENABLED) {
+  console.log('🔐 Generiere TLS-Zertifikat…');
+  const pems = generateCert(getLocalIPs());
+  server = https.createServer({ key: pems.key, cert: pems.cert }, app);
+  // HTTP → HTTPS Redirect
+  http.createServer((req, res) => {
+    res.writeHead(301, { Location: `https://${req.headers.host.split(':')[0]}:${PORT}${req.url}` });
+    res.end();
+  }).listen(80, '0.0.0.0').on('error', () => { /* Port 80 nicht verfügbar – kein Problem */ });
+} else {
+  server = http.createServer(app);
+}
+const wss = new WebSocketServer({ server });
 
 app.use(express.static(staticRoot));
 
@@ -624,24 +630,27 @@ async function start() {
 
   server.listen(PORT, '0.0.0.0', () => {
     const ips = getLocalIPs();
-    const localUrl = `https://localhost:${PORT}`;
+    const proto = TLS_ENABLED ? 'https' : 'http';
+    const localUrl = `${proto}://localhost:${PORT}`;
 
-    console.log('\n🎙️  LAN Voice Server gestartet! (HTTPS)\n');
+    console.log(`\n🎙️  LAN Voice Server gestartet! (${TLS_ENABLED ? 'HTTPS' : 'HTTP'})\n`);
     console.log(`   Lokal:    ${localUrl}`);
-    ips.forEach(ip => console.log(`   Netzwerk: https://${ip}:${PORT}`));
+    ips.forEach(ip => console.log(`   Netzwerk: ${proto}://${ip}:${PORT}`));
     console.log('');
     console.log(`   Modus:    ${AUTH_ENABLED ? 'Internet (mit Login)' : 'LAN (ohne Login)'}`);
-    console.log('   ⚠️  Beim ersten Aufruf im Browser:');
-    console.log('      Chrome/Edge → "Erweitert" → "Weiter zu <IP>"');
-    console.log('      Firefox    → "Risiko akzeptieren und fortfahren"');
+    if (TLS_ENABLED) {
+      console.log('   ⚠️  Beim ersten Aufruf im Browser:');
+      console.log('      Chrome/Edge → "Erweitert" → "Weiter zu <IP>"');
+      console.log('      Firefox    → "Risiko akzeptieren und fortfahren"');
+    }
     console.log('\n   Teile die Netzwerk-URL mit anderen Geräten im LAN.\n');
     console.log('   [Fenster offen lassen – Server läuft solange dieses Fenster offen ist]\n');
 
-    // Browser automatisch öffnen
-    const openCmd = process.platform === 'win32' ? `start ${localUrl}` :
-                    process.platform === 'darwin' ? `open ${localUrl}` :
-                    `xdg-open ${localUrl}`;
-    exec(openCmd, (err) => { if (err) console.log('   (Browser konnte nicht automatisch geöffnet werden)'); });
+    // Browser automatisch öffnen (nur lokal sinnvoll)
+    if (process.platform === 'win32' || process.platform === 'darwin') {
+      const openCmd = process.platform === 'win32' ? `start ${localUrl}` : `open ${localUrl}`;
+      exec(openCmd, (err) => { if (err) console.log('   (Browser konnte nicht automatisch geöffnet werden)'); });
+    }
   });
 }
 

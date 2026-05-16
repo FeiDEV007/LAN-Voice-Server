@@ -18,7 +18,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "pkg server.js --targets node18-win-x64 --output \"dist/LAN Voice Server.exe\" --compress GZip"
+    "package:exe": "pkg server.js --targets node18-win-x64 --output \"dist/LAN Voice Server.exe\" --compress GZip"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
