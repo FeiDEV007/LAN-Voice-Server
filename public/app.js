@@ -340,6 +340,12 @@
   }
 
   function logout() {
+    // Leave room first if in one
+    if (currentRoomId) {
+      send({ type: 'leave_room' });
+      currentRoomId = null;
+    }
+
     authToken = '';
     currentUser = null;
     myUsername = '';
